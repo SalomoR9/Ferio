@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ferio - Ihr zuverlässiger Partner für die Organisation von Schulveranstaltungen.">
+    <meta name="keywords" content="Schulveranstaltungen, Eventplanung, Organisation, Ferio">
+    <meta name="author" content="Ferio Team">
+    <title>Ferio - Schulveranstaltungsorganisation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #e5e5d8;
+            color: #333333;
+            scroll-behavior: smooth;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #f4f4f4;
+        }
+
+        body.dark-mode section {
+            background-color: inherit;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        body.dark-mode h2, body.dark-mode p, body.dark-mode a {
+            color: #f4f4f4;
+        }
+
+        .disclaimer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .disclaimer-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .disclaimer-window {
+            background-color: #fff;
+            padding: 2em;
+            max-width: 600px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.5s ease;
+        }
+
+        .disclaimer-overlay.show .disclaimer-window {
+            transform: scale(1);
+        }
+
+        .disclaimer-window h2 {
+            font-size: 2em;
+            color: #333333;
+            margin-bottom: 1em;
+        }
+
+        .disclaimer-window p {
+            font-size: 1.1em;
+            color: #555555;
+            margin-bottom: 2em;
+            line-height: 1.6;
+        }
+
+        .disclaimer-window p.english-disclaimer {
+            color: red; 
+        }
+
+        .disclaimer-window button {
+            padding: 0.8em 2em;
+            font-size: 1em;
+            background-color: #009688;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .disclaimer-window button:hover {
+            background-color: #00796b;
+        }
+
+         .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2e2e2e;
+            padding: 1em 3em;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            opacity: 0.9;
+            transition: background-color 0.5s ease;
+        }
+
+        .navbar a {
+            color: #f4f4f4;
+            text-decoration: none;
+            font-size: 1.2em;
+            margin-left: 1em;
+            transition: color 0.3s;
+        }
+
+        .navbar a:hover {
+            color: #00bfa5;
+        }
+
+        .hero {
+            background-image: url('hero.png');
+            background-size: cover;
+            background-position: center;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 0 1em;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            font-weight: 700;
+            margin: 0.5em 0;
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        .hero button {
+            padding: 1em 2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #009688;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .hero button:hover {
+            background-color: #00796b;
+            transform: translateY(-3px);
+        }
+
+        section {
+            padding: 4em 1em;
+            text-align: center;
+            position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        section:nth-of-type(odd) {
+            background-color: #f4f4f1;
+        }
+
+        section:nth-of-type(even) {
+            background-color: #e0e0d1;
+        }
+
+        body.dark-mode section:nth-of-type(odd) {
+            background-color: #2e2e2e;
+        }
+
+        body.dark-mode section:nth-of-type(even) {
+            background-color: #1a1a1a;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 1.5em;
+            color: #00796b;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin: 1em auto;
+            max-width: 800px;
+        }
+
+        #back-to-top {
+            display: none;
+            position: fixed;
+            bottom: 40px;
+            right: 30px;
+            padding: 1em;
+            border-radius: 50%;
+            background-color: #009688;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.5s ease, background-color 0.3s;
+        }
+
+        #back-to-top.show {
+            opacity: 1;
+            display: block;
+        }
+
+        #back-to-top.hide {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #back-to-top:hover {
+            background-color: #00796b;
+        }
+
+        #dark-mode-toggle {
+            position: fixed;
+            bottom: 100px;
+            left: 30px;
+            background-color: #f4f4f1;
+            color: #2e2e2e;
+            padding: 0.8em 1.5em;
+            border-radius: 30px;
+            border: 2px solid #2e2e2e;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        #dark-mode-toggle.dark {
+            background-color: #121212;
+            color: #f4f4f4;
+            border-color: #f4f4f4;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2em;
+        }
+
+        input, textarea {
+            padding: 0.8em;
+            margin: 0.5em 0;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+            border: 1px solid #00796b;
+        }
+
+        button[type="submit"] {
+            padding: 1em 2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #009688;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #00796b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="disclaimer-overlay" id="disclaimer-popup">
+        <div class="disclaimer-window">
+            <h2>Wichtiger Hinweis</h2>
+            <p>
+                Diese Website, einschließlich aller Dienste, Namen, Erfahrungsberichte und Inhalte, ist vollständig fiktiv und stellt keine realen Entitäten dar. Sie ist Teil eines privaten Projekts, das ausschließlich zu Demonstrations- und Bildungszwecken erstellt wurde. Der Inhaber dieser Website haftet nicht für die bereitgestellten Informationen oder Materialien.
+            </p>
+            <p class="english-disclaimer">
+                This website, including all services, names, testimonials, and content, is entirely fictional and does not represent real entities. It is part of a private project created solely for demonstration and educational purposes. The owner of this website is not liable for any information or material presented.
+            </p>
+            <p>
+                Этот веб-сайт, включая все услуги, имена, отзывы и контент, является полностью вымышленным и не представляет реальные сущности. Он является частью частного проекта, созданного исключительно в демонстрационных и образовательных целях. Владелец этого веб-сайта не несет ответственности за предоставленную информацию или материалы.
+            </p>
+            <p>
+                هذا الموقع، بما في ذلك جميع الخدمات والأسماء والشهادات والمحتوى، هو خيالي تمامًا ولا يمثل كيانات حقيقية. إنه جزء من مشروع خاص تم إنشاؤه لأغراض العرض والتعليم فقط. لا يتحمل مالك هذا الموقع أي مسؤولية عن المعلومات أو المواد المقدمة.
+            </p>
+            <button id="disclaimer-btn">Ich verstehe</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="navbar">
+            <a href="#home" class="nav-link">Startseite</a>
+            <a href="#services" class="nav-link">Dienstleistungen</a>
+            <a href="#about" class="nav-link">Über uns</a>
+            <a href="#team" class="nav-link">Team</a>
+            <a href="#contact" class="nav-link">Kontakt</a>
+        </div>
+    </header>
+
+    <div class="hero" id="home">
+        <div>
+            <h1>Willkommen bei Ferio</h1>
+            <p>Ihr zuverlässiger Partner für die Organisation von Schulveranstaltungen</p>
+            <button id="learn-more">Mehr Erfahren</button>
+        </div>
+    </div>
+
+    <section class="services" id="services">
+        <h2>Unsere Dienstleistungen</h2>
+        <p>Wir übernehmen die komplette Organisation von Schulveranstaltungen, von der Planung bis zur Durchführung.</p>
+    </section>
+
+    <section id="about">
+        <h2>Über uns</h2>
+        <p>Ferio ist Ihr vertrauenswürdiger Partner für die Planung und Durchführung von Veranstaltungen an Schulen. Unser erfahrenes Team sorgt dafür, dass alles reibungslos abläuft.</p>
+    </section>
+
+    <section id="team">
+        <h2>Unser Team</h2>
+        <p>Unser engagiertes Team besteht aus Experten für Eventplanung, die jede Veranstaltung zu einem vollen Erfolg machen.</p>
+    </section>
+
+    <section class="testimonials">
+        <h2>Erfahrungen unserer Kunden</h2>
+        <div class="testimonial">
+            <p>“Ferio hat unser Schulfest unglaublich gut organisiert. Alles war perfekt! Danke an das Team!” – Ghoete Gymnasium</p>
+        </div>
+        <div class="testimonial">
+            <p>“Wir könnten uns keine bessere Unterstützung vorstellen. Ferio macht Veranstaltungen einfach!” – Einstein Gesamtschule</p>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Kontaktieren Sie uns</h2>
+        <form>
+            <input type="text" name="name" placeholder="Ihr Name">
+            <input type="email" name="email" placeholder="Ihre E-Mail-Adresse">
+            <textarea name="message" rows="5" placeholder="Ihre Nachricht"></textarea>
+            <button type="submit">Senden</button>
+        </form>
+    </section>
+
+    <div id="back-to-top">&uarr;</div>
+
+    <button id="dark-mode-toggle">Dark Mode</button>
+
+    <script>
+        const disclaimerPopup = document.getElementById('disclaimer-popup');
+        const disclaimerButton = document.getElementById('disclaimer-btn');
+        
+        window.onload = () => {
+            disclaimerPopup.classList.add('show');
+        };
+        
+        disclaimerButton.addEventListener('click', () => {
+            disclaimerPopup.classList.remove('show');
+        });
+
+        const toggleButton = document.getElementById('dark-mode-toggle');
+        toggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            toggleButton.classList.toggle('dark');
+        });
+
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('hide');
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+                backToTopButton.classList.add('hide');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        const learnMoreButton = document.getElementById('learn-more');
+        learnMoreButton.addEventListener('click', () => {
+            window.scrollBy({
+                top: window.innerHeight * 0.5,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+</html>
+
+</body>
+</html>
